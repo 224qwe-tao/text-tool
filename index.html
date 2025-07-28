@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Merge Text Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Online Merge Text Tool</h1>
+        <div class="content-wrapper">
+            <div class="left-column">
+                <div class="top-controls">
+                    <label for="word-limit-select">Word limit:</label>
+                    <select id="word-limit-select">
+                        <option value="5000">5000</option>
+                        <option value="10000">10000</option>
+                        <option value="15000">15000</option>
+                        <option value="20000">20000</option>
+                        <option value="25000">25000</option>
+                        <option value="30000">30000</option>
+                        <option value="35000">35000</option>
+                        <option value="40000">40000</option>
+                        <option value="45000">45000</option>
+                        <option value="50000">50000</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="number" id="custom-limit" style="display:none; margin-left:10px;" min="1">
+                    <button class="blue-btn" id="set-limit">Set</button>
+                </div>
+                <div class="actions">
+                    <button class="blue-btn" id="combine">Combine</button>
+                    <button class="blue-btn" id="add-list">Add</button>
+                    <input type="checkbox" id="space-separation">
+                </div>
+                <div class="lists">
+                    <div class="list">
+                        <label>List 1</label>
+                        <div class="textarea-wrapper">
+                            <textarea placeholder="Type or paste your content here."></textarea>
+                            <button class="clear-text">×</button>
+                        </div>
+                        <div class="button-bar">
+                            <button class="copy-text"><i class="fas fa-copy"></i></button>
+                            <button class="zoom-in"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-controls">
+                    <button class="blue-btn" id="copy">Copy Results</button>
+                    <button class="blue-btn" id="clear">Clear</button>
+                    <button class="blue-btn" id="save">Save</button>
+                    <button class="blue-btn" id="reset">Reset</button>
+                    <button class="blue-btn" id="download">Download</button>
+                    <button class="blue-btn" id="next">Next</button>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="result">
+                    <div class="textarea-wrapper">
+                        <textarea id="result" placeholder="Results will be shown here."></textarea>
+                    </div>
+                    <div class="button-bar">
+                        <button class="copy-text"><i class="fas fa-copy"></i></button>
+                        <button class="zoom-in"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

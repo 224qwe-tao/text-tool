@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Segment Text Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Online Segment Text Tool</h1>
+        <div class="content-wrapper">
+            <div class="left-column">
+                <div class="top-controls">
+                    <label for="word-limit-select">Range:</label>
+                    <select id="word-limit-select">
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                        <option value="1500">1500</option>
+                        <option value="2000">2000</option>
+                        <option value="2500">2500</option>
+                        <option value="3000">3000</option>
+                        <option value="3500">3500</option>
+                        <option value="4000">4000</option>
+                        <option value="4500">4500</option>
+                        <option value="5000">5000</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="number" id="custom-limit" style="display:none; margin-left:10px;" min="1">
+                    <button class="blue-btn" id="set-limit">Set</button>
+                </div>
+                <div class="actions">
+                    <button class="blue-btn" id="segment">Segment</button>
+                </div>
+                <div class="lists">
+                    <div class="list">
+                        <label>List 1</label>
+                        <div class="textarea-wrapper">
+                            <textarea id="input-text" placeholder="Type or paste your content here."></textarea>
+                        </div>
+                        <div class="button-bar">
+                            <button class="copy-text"><i class="fas fa-copy"></i></button>
+                            <button class="zoom-in"><i class="fas fa-expand"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-controls">
+                    <button class="blue-btn" id="copy">Copy Results</button>
+                    <button class="blue-btn" id="clear">Clear</button>
+                    <button class="blue-btn" id="save">Save</button>
+                    <button class="blue-btn" id="reset">Reset</button>
+                    <button class="blue-btn" id="download">Download</button>
+                    <button class="blue-btn" id="back">Back</button>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="result">
+                    <div class="segments"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
