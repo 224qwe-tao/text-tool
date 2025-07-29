@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newList.innerHTML = `
                 <label>List ${listCount}</label>
                 <div class="textarea-wrapper">
-                    <textarea placeholder="Type or paste your content here"></textarea>
+                    <textarea placeholder="Type or paste your content here."></textarea>
                     <button class="clear-text">×</button>
                 </div>
                 <div class="button-bar">
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="list">
                     <label>List 1</label>
                     <div class="textarea-wrapper">
-                        <textarea placeholder="Type or paste your content here"></textarea>
+                        <textarea placeholder="Type or paste your content here."></textarea>
                         <button class="clear-text">×</button>
                     </div>
                     <div class="button-bar">
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     newList.innerHTML = `
                         <label>List ${k}</label>
                         <div class="textarea-wrapper">
-                            <textarea placeholder="Type or paste your content here"></textarea>
+                            <textarea placeholder="Type or paste your content here."></textarea>
                             <button class="clear-text">×</button>
                         </div>
                         <div class="button-bar">
