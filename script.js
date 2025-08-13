@@ -313,6 +313,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        function attachDeleteListener(btn, segmentDiv) {
+            btn.addEventListener('click', () => {
+                segmentDiv.remove();
+                renumberSegments();
+            });
+        }
+
+        function renumberSegments() {
+            const segments = segmentsContainer.querySelectorAll('.segment');
+            segmentCount = segments.length;
+            segments.forEach((segment, index) => {
+                segment.querySelector('label').textContent = `Segment ${index + 1}`;
+            });
+        }
+
         function openZoomModal(originalTa) {
             const modal = document.createElement('div');
             modal.classList.add('modal');
@@ -358,6 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <label>Segment ${segmentCount}</label>
                 <div class="textarea-wrapper">
                     <textarea>${value}</textarea>
+                    <button class="clear-text">×</button>
                 </div>
                 <div class="button-bar">
                     <button class="copy-text"><i class="fas fa-copy"></i></button>
@@ -370,6 +386,8 @@ document.addEventListener('DOMContentLoaded', () => {
             attachCopyListener(newCopyBtn, newTa);
             const newZoomBtn = newSegment.querySelector('.zoom-in');
             attachZoomListener(newZoomBtn, newTa);
+            const newDeleteBtn = newSegment.querySelector('.clear-text');
+            attachDeleteListener(newDeleteBtn, newSegment);
             segmentCount++;
         }
 
