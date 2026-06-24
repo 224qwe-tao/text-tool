@@ -90,7 +90,7 @@
             <button id="editCategoriesBtn">修改分類名稱</button>
           </div>
           <div class="button-grid compact-top">
-            <button id="deleteCategoryEntriesBtn" class="danger-soft">刪除分類條目</button>
+            <button id="deleteCategoryEntriesBtn" class="danger-soft">刪除條目</button>
             <button id="exportDataBtn">匯出修改</button>
             <label class="file-btn" for="importDataInput">匯入修改</label>
             <input id="importDataInput" type="file" accept="application/json,.json" />
@@ -225,7 +225,7 @@
       <div class="dialog-head">
         <div>
           <h2>編輯分類</h2>
-          <p class="subtitle">重新命名主分類或子分類，或刪除該分類內的字典條目。修改會儲存在目前瀏覽器。</p>
+          <p class="subtitle">重新命名主分類或子分類，或在所選分類中刪除單一字典條目。修改會儲存在目前瀏覽器。</p>
         </div>
         <div class="dialog-tools">
           <button type="button" id="closeCategoryDialog" class="ghost-btn">關閉</button>
@@ -249,17 +249,21 @@
             <span>新分類名稱</span>
             <input id="categoryTo" placeholder="輸入新的分類名稱" />
           </label>
+          <label class="field full">
+            <span>要刪除的條目（只刪除單一條目）</span>
+            <select id="categoryEntryToDelete"></select>
+          </label>
         </div>
         <div class="category-actions">
           <button type="submit" class="primary">套用分類名稱</button>
-          <button type="button" id="deleteCategoryEntries" class="danger">刪除分類內條目</button>
+          <button type="button" id="deleteCategoryEntries" class="danger">刪除所選條目</button>
           <button type="button" id="cancelCategoryBtn">取消</button>
         </div>
         <div class="category-list-wrap">
           <h3>目前分類一覽</h3>
           <div id="categoryList" class="category-list"></div>
         </div>
-        <p class="hint">提示：新增條目或修改條目時也可以直接輸入新的分類名稱；「刪除分類內條目」會移除目前所選分類中的全部條目，可透過「清除本機修改」恢復原始資料。</p>
+        <p class="hint">提示：新增條目或修改條目時也可以直接輸入新的分類名稱；「刪除所選條目」只會移除上方選單中的一個條目，可透過「清除本機修改」恢復原始資料。</p>
       </div>
     </form>
   </dialog>

@@ -31,7 +31,7 @@
     editStartPage: $('editStartPage'), editEndPage: $('editEndPage'), editMainTag: $('editMainTag'), editNegativeTag: $('editNegativeTag'), editNotes: $('editNotes'), editRaw: $('editRaw'),
     majorOptions: $('majorOptions'), sectionOptions: $('sectionOptions'),
     categoryDialog: $('categoryDialog'), categoryForm: $('categoryForm'), closeCategoryDialog: $('closeCategoryDialog'), cancelCategoryBtn: $('cancelCategoryBtn'),
-    categoryType: $('categoryType'), categoryFrom: $('categoryFrom'), categoryTo: $('categoryTo'), categoryList: $('categoryList'), deleteCategoryEntries: $('deleteCategoryEntries')
+    categoryType: $('categoryType'), categoryFrom: $('categoryFrom'), categoryTo: $('categoryTo'), categoryEntryToDelete: $('categoryEntryToDelete'), categoryList: $('categoryList'), deleteCategoryEntries: $('deleteCategoryEntries')
   };
 
   function showToast(msg){
@@ -490,13 +490,36 @@
     return [...counts.entries()].sort((a,b) => a[0].localeCompare(b[0], 'zh-Hant'));
   }
 
+  function entriesInCategory(type, name){
+    return data
+      .filter(entry => ((entry[type] || '未分類').trim() || '未分類') === name)
+      .sort((a,b) => (Number(a.start_page) || 99999) - (Number(b.start_page) || 99999) || String(a.title || '').localeCompare(String(b.title || ''), 'zh-Hant'));
+  }
+
+  function renderCategoryEntryChoices(){
+    const type = els.categoryType.value === 'section' ? 'section' : 'major';
+    const name = (els.categoryFrom.value || '').trim();
+    const previous = els.categoryEntryToDelete.value;
+    const entries = name ? entriesInCategory(type, name) : [];
+    els.categoryEntryToDelete.innerHTML = entries.map(entry => {
+      const page = pageLabel(entry);
+      const markers = `${entry.isCustom ? ' · 新增' : ''}${entry.isEdited ? ' · 已修改' : ''}`;
+      return `<option value="${escapeHtml(entry.id)}">${escapeHtml(entry.title)}（${page}）${markers}</option>`;
+    }).join('');
+    if (entries.some(entry => entry.id === previous)) els.categoryEntryToDelete.value = previous;
+    els.deleteCategoryEntries.disabled = !entries.length;
+  }
+
   function renderCategoryEditor(){
     const type = els.categoryType.value || 'major';
+    const previous = els.categoryFrom.value;
     const counts = getCategoryCounts(type);
     els.categoryFrom.innerHTML = counts.map(([name, count]) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}（${count}）</option>`).join('');
-    if (!els.categoryFrom.value && counts[0]) els.categoryFrom.value = counts[0][0];
+    if (counts.some(([name]) => name === previous)) els.categoryFrom.value = previous;
+    else if (counts[0]) els.categoryFrom.value = counts[0][0];
     const selected = els.categoryFrom.value || (counts[0] ? counts[0][0] : '');
     els.categoryTo.value = selected;
+    renderCategoryEntryChoices();
     els.categoryList.innerHTML = counts.map(([name, count]) => `
       <button type="button" class="category-pill" data-name="${escapeHtml(name)}">
         <span>${escapeHtml(name)}</span><small>${count} 條</small>
@@ -505,6 +528,7 @@
       btn.addEventListener('click', () => {
         els.categoryFrom.value = btn.dataset.name;
         els.categoryTo.value = btn.dataset.name;
+        renderCategoryEntryChoices();
       });
     });
   }
@@ -548,27 +572,26 @@
   }
 
 
-  function deleteEntriesInCategory(){
+  function deleteSelectedEntryInCategory(){
     const type = els.categoryType.value === 'section' ? 'section' : 'major';
     const name = (els.categoryFrom.value || '').trim();
-    if (!name) return showToast('請先選擇要刪除的分類');
-    const targets = data.filter(entry => ((entry[type] || '未分類').trim() || '未分類') === name);
-    if (!targets.length) return showToast('此分類內沒有條目');
+    const id = els.categoryEntryToDelete.value;
+    if (!name) return showToast('請先選擇分類');
+    if (!id) return showToast('請先選擇要刪除的條目');
+    const entry = findEntry(id);
+    if (!entry) return showToast('找不到該條目，請重新選擇');
+
     const label = type === 'section' ? '子分類' : '主分類';
-    const ok = confirm(`確定刪除「${name}」${label}內的 ${targets.length} 個條目？\n\n這只會儲存在目前瀏覽器；可用「清除本機修改」恢復原始資料。`);
+    const ok = confirm(`確定刪除「${entry.title}」？\n\n目前位於「${name}」${label}。這只會刪除這一個條目，不會刪除整個分類；可用「清除本機修改」恢復原始資料。`);
     if (!ok) return;
 
-    const ids = new Set(targets.map(e => e.id));
-    state.local.custom = state.local.custom.filter(e => !ids.has(e.id));
-    targets.forEach(entry => {
-      if (!entry.isCustom) {
-        state.local.deleted = unique([...(state.local.deleted || []), entry.id]);
-        delete state.local.edits[entry.id];
-      }
-    });
-    state.selected = state.selected.filter(item => !ids.has(item.id));
-    if (type === 'major' && state.major === name) state.major = '全部';
-    if (type === 'section' && state.section === name) state.section = '全部';
+    if (entry.isCustom) {
+      state.local.custom = state.local.custom.filter(e => e.id !== id);
+    } else {
+      state.local.deleted = unique([...(state.local.deleted || []), id]);
+      delete state.local.edits[id];
+    }
+    state.selected = state.selected.filter(item => item.id !== id);
 
     saveLocalData();
     hydrateData();
@@ -576,7 +599,7 @@
     renderEntries();
     renderSelected();
     renderCategoryEditor();
-    showToast(`已刪除 ${targets.length} 個條目`);
+    showToast(`已刪除條目：${entry.title}`);
   }
 
   function refreshOutputOptions(){ renderSelected(); }
@@ -629,9 +652,9 @@
   els.editCategoriesBtn.addEventListener('click', openCategoryEditor);
   els.deleteCategoryEntriesBtn.addEventListener('click', openCategoryEditor);
   els.categoryType.addEventListener('change', renderCategoryEditor);
-  els.categoryFrom.addEventListener('change', () => { els.categoryTo.value = els.categoryFrom.value; });
+  els.categoryFrom.addEventListener('change', () => { els.categoryTo.value = els.categoryFrom.value; renderCategoryEntryChoices(); });
   els.categoryForm.addEventListener('submit', e => { e.preventDefault(); applyCategoryRename(); });
-  els.deleteCategoryEntries.addEventListener('click', deleteEntriesInCategory);
+  els.deleteCategoryEntries.addEventListener('click', deleteSelectedEntryInCategory);
   els.closeCategoryDialog.addEventListener('click', () => els.categoryDialog.close());
   els.cancelCategoryBtn.addEventListener('click', () => els.categoryDialog.close());
   els.closeEntryDialog.addEventListener('click', () => els.entryDialog.close());
